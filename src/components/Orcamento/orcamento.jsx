@@ -5,52 +5,89 @@ import Logo from "../../assets/Logo.jpg";
 
 function OrcamentoPDF({ dados }) {
 
+  async function gerarPDF() {
+    const areaPDF = document.getElementById("pdf");
+
+    const canvas = await html2canvas(areaPDF, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      scrollY: -window.scrollY,
+    });
+
+    const imgData = canvas.toDataURL("image/png", 1.0);
+
+    const pdf = new jsPDF({
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    let imgWidth = pdfWidth;
+    let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    if (imgHeight > pdfHeight) {
+      imgHeight = pdfHeight;
+      imgWidth = (canvas.width * imgHeight) / canvas.height;
+    }
+
+    pdf.addImage(
+      imgData,
+      "PNG",
+      0,
+      0,
+      imgWidth,
+      imgHeight,
+      undefined,
+      "FAST"
+    );
+
+    return pdf;
+  }
+
   async function compartilharPDF() {
     try {
-      const areaPDF = document.getElementById("pdf");
-      const captureScale = Math.max(2, Math.min(4, window.devicePixelRatio || 2));
-
-      const canvas = await html2canvas(areaPDF, {
-        scale: captureScale,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-        scrollY: -window.scrollY,
-      });
-
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      const pdf = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      let imgWidth = pdfWidth;
-      let imgHeight = (canvas.height * imgWidth) / canvas.width;
-      if (imgHeight > pdfHeight) {
-        imgHeight = pdfHeight;
-        imgWidth = (canvas.width * imgHeight) / canvas.height;
-      }
-
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight, undefined, "FAST");
+      const pdf = await gerarPDF();
 
       const pdfBlob = pdf.output("blob");
 
       const arquivo = new File(
         [pdfBlob],
         "orcamento.pdf",
-        { type: "application/pdf" }
+        {
+          type: "application/pdf",
+        }
       );
 
-      if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+      if (
+        navigator.canShare &&
+        navigator.canShare({ files: [arquivo] })
+      ) {
         await navigator.share({
           title: "Orçamento",
           text: "Segue o orçamento em PDF",
           files: [arquivo],
         });
       } else {
-        alert("Seu navegador não suporta compartilhamento de arquivos.");
+        pdf.save("orcamento.pdf");
       }
 
     } catch (erro) {
-      console.log(erro);
+      console.error(erro);
+      alert("Não foi possível compartilhar o PDF.");
+    }
+  }
+
+  async function baixarPDF() {
+    try {
+      const pdf = await gerarPDF();
+      pdf.save("orcamento.pdf");
+    } catch (erro) {
+      console.error(erro);
+      alert("Não foi possível gerar o PDF.");
     }
   }
 
@@ -59,7 +96,6 @@ function OrcamentoPDF({ dados }) {
 
       <div id="pdf" className="pdf">
 
-        {/* TOPO */}
         <div className="topo-pdf">
 
           <div className="lado-esquerdo">
@@ -74,7 +110,6 @@ function OrcamentoPDF({ dados }) {
 
         </div>
 
-        {/* DUAS COLUNAS */}
         <div className="duas-colunas">
 
           <div className="coluna">
@@ -103,14 +138,12 @@ function OrcamentoPDF({ dados }) {
           </div>
 
         </div>
-         
-         {/* DESCRIÇÃO */}
+
         <div className="descricao-pdf">
           <h2>Descrição do Orçamento</h2>
           <p className="descricao-texto">{dados.descricao}</p>
         </div>
 
-        {/* PAGAMENTO + PRAZO */}
         <div className="forma-de-pagamento">
 
           <h2>Forma de Pagamento e Prazo de Entrega</h2>
@@ -133,9 +166,23 @@ function OrcamentoPDF({ dados }) {
 
       </div>
 
-      <button className="botao-compartilhar" onClick={compartilharPDF}>
-        Compartilhar PDF
-      </button>
+      <div className="botoes-pdf">
+
+        <button
+          className="botao-compartilhar"
+          onClick={compartilharPDF}
+        >
+          Compartilhar PDF
+        </button>
+
+        <button
+          className="botao-baixar"
+          onClick={baixarPDF}
+        >
+          Baixar PDF
+        </button>
+
+      </div>
 
     </div>
   );
