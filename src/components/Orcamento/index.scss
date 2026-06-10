@@ -23,7 +23,8 @@
 /* cada lado ocupa o mesmo espaço */
 .lado-esquerdo,
 .lado-direito {
-  width: 120px;
+  width: 200px;
+  flex-shrink: 0;
 }
 
 .lado-esquerdo {
@@ -32,8 +33,9 @@
 }
 
 .logo {
-  width: 200px;
+  width: 180px;
   height: auto;
+  display: block;
 }
 
 /* CENTRO REAL */
@@ -46,13 +48,9 @@
 .titulo-orcamento {
   margin: 0;
   text-align: center;
-}
-
-.titulo-orcamento {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
+  color: #1e5aa8;
+  font-size: 32px;
+  font-weight: bold;
 }
 
 /* COLUNAS */
