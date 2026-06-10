@@ -20,16 +20,10 @@
   padding: 20px;
 }
 
-/* posicionamento para poder centralizar o título sem deslocar a logo */
-.topo-pdf {
-  position: relative;
-}
-
 /* cada lado ocupa o mesmo espaço */
 .lado-esquerdo,
 .lado-direito {
-  width: 200px;
-  flex-shrink: 0;
+  width: 120px;
 }
 
 .lado-esquerdo {
@@ -37,10 +31,10 @@
   justify-content: flex-start;
 }
 
+/* LOGO MENOR */
 .logo {
-  width: 180px;
+  width: 150px;
   height: auto;
-  display: block;
 }
 
 /* CENTRO REAL */
@@ -50,27 +44,18 @@
   justify-content: center;
 }
 
-/* título central aplicado ao h1 dentro de .centro */
+/* TÍTULO MENOR */
 .centro h1 {
   margin: 0;
   text-align: center;
   color: #1e5aa8;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: bold;
-  /* centraliza no topo sem afetar fluxo dos lados */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  max-width: calc(100% - 240px);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* COLUNAS */
 .duas-colunas {
   display: flex;
-  flex-direction: row;
   gap: 30px;
 }
 
@@ -155,40 +140,4 @@
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
-}
-
-/* ajustes responsivos: empilha logo e título em telas pequenas */
-@media (max-width: 600px) {
-  .pdf {
-    width: auto;
-    min-width: 0;
-    padding: 12px;
-  }
-
-  .topo-pdf {
-    /* manter linha, apenas reduzir as margens laterais */
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    border-width: 3px;
-    padding: 12px;
-  }
-
-  .lado-esquerdo,
-  .lado-direito {
-    width: 80px;
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-  }
-
-  .logo {
-    width: 64px;
-  }
-
-  .centro h1 {
-    font-size: 20px;
-    line-height: 1.1;
-    max-width: calc(100% - 160px);
-  }
 }
